@@ -1,2 +1,2 @@
-# Finals_GameNetw_Ai
+# Regicide_Draft_Finals
  
