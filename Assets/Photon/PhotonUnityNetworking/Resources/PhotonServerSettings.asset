@@ -42,6 +42,9 @@ MonoBehaviour:
   - AttackEnemy
   - AttackPlayer
   - SyncTurn
+  - RPCAssignSprite
+  - RPCDeath
+  - RPCTakeDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
