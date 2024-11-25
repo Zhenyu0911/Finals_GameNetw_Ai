@@ -1,8 +1,10 @@
 using Photon.Pun;
-using System.Collections;
+using Photon.Realtime; // Required for SendOptions and RaiseEventOptions
 using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun.UtilityScripts;
+using UnityEngine;
+using UnityEngine.UI;
+
 
 public class NetworkManager : SingletonPUN<NetworkManager>
 {
@@ -12,10 +14,13 @@ public class NetworkManager : SingletonPUN<NetworkManager>
     private const string PLAYER_PREFAB_NAME = "Player";
     [SerializeField]
     private Sprite[] playerIcons;
-    [SerializeField]
-    private Sprite[] playerBullets;
 
     public bool IsInitialized = false;
+
+    private Dictionary<int, bool> playerReadyStates = new Dictionary<int, bool>(); // Player ready states
+
+    [SerializeField] private Button readyButton; // Assign your Ready button in the Inspector
+    [SerializeField] private Image buttonImage; // Assign the button's image for color changes
 
     protected override void Awake()
     {
@@ -29,6 +34,12 @@ public class NetworkManager : SingletonPUN<NetworkManager>
         // Spawn the player
         GameObject player = PhotonNetwork.Instantiate(PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
         IsInitialized = true;
+
+        // Add listener to the ready button
+        if (readyButton != null)
+        {
+            readyButton.onClick.AddListener(ToggleReadyState);
+        }
     }
 
     public Sprite GetPlayerIcon(int id)
@@ -44,16 +55,39 @@ public class NetworkManager : SingletonPUN<NetworkManager>
         return null;
     }
 
-    public Sprite GetPlayerBullet(int id)
+    private void ToggleReadyState()
     {
-        if (id > -1 && id < playerBullets.Length)
+        int playerId = PhotonNetwork.LocalPlayer.ActorNumber;
+
+        // Toggle the ready state
+        bool isReady = playerReadyStates.ContainsKey(playerId) && playerReadyStates[playerId];
+        playerReadyStates[playerId] = !isReady;
+
+        // Update button color and log debug message
+        if (buttonImage != null)
         {
-            return playerBullets[id];
+            buttonImage.color = playerReadyStates[playerId] ? Color.green : Color.red;
+        }
+
+        if (playerReadyStates[playerId])
+        {
+            Debug.Log($"{PhotonNetwork.LocalPlayer.NickName} is Ready.");
         }
         else
         {
-            Debug.LogWarning($"Cannot access sprite with id {id}");
+            Debug.Log($"{PhotonNetwork.LocalPlayer.NickName} is Unready.");
         }
-        return null;
+
+        // Optionally, you can broadcast the ready state to other players using Photon
+       // RaiseReadyStateEvent(playerReadyStates[playerId]);
     }
+
+    /*private void RaiseReadyStateEvent(bool isReady)
+    {
+        // Send a custom event to notify other players about the ready state
+        object[] content = new object[] { PhotonNetwork.LocalPlayer.ActorNumber, isReady }; // Custom content
+        PhotonNetwork.RaiseEvent(SCORE_UPDATED_EVENT_CODE, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            SendOptions.SendReliable);
+    }*/
 }
