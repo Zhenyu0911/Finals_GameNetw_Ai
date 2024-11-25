@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 4172735511712416075}
   - component: {fileID: 8078005615212180492}
   - component: {fileID: 2956252966031550618}
-  - component: {fileID: 5415065102422978399}
+  - component: {fileID: 7793389825990083394}
   m_Layer: 5
   m_Name: PlayerStatusUI
   m_TagString: Untagged
@@ -287,7 +287,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5415065102422978399
+--- !u!114 &7793389825990083394
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
