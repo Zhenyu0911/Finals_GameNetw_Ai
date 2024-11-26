@@ -2,7 +2,6 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,19 +16,17 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
 
     [SerializeField]
     private TextMeshProUGUI playerName;
-    [SerializeField]
-    private Image playerIcon;
 
     private Player player;
 
     private void Start()
     {
-        // We default at a waiting state
+        // Default to a waiting state
         ShowConnectionUI(false);
         PlayerNumbering.OnPlayerNumberingChanged += UpdateUI;
     }
 
-    // Make sure to add/remove the callback target so we can receive photon raise events
+    // Add/remove the callback target so we can receive Photon raise events
     private void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
@@ -42,29 +39,29 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
 
     private void UpdateUI()
     {
-        //Check if there is an available player with our index
+        // Check if there is an available player with our index
         if (playerIndex <= PhotonNetwork.PlayerList.Length - 1)
         {
             player = PhotonNetwork.PlayerList[playerIndex];
             int playerNumber = player.GetPlayerNumber();
-            //It's possible to get -1 as player number when it is not fully initialized
-            //So let's add a check
+
+            // Add a check if the player number is valid
             if (playerNumber == -1) return;
 
             ShowConnectionUI(true);
             playerName.text = player.NickName;
-            playerIcon.sprite = NetworkManager.Instance.GetPlayerIcon(playerNumber);
+
         }
         else
         {
-            // Player disconnected 
+            // Player disconnected
             ShowConnectionUI(false);
         }
     }
 
     public void OnEvent(EventData photonEvent)
     {
-        
+        // Handle Photon events if necessary
     }
 
     private void ShowConnectionUI(bool isConnected)
@@ -72,6 +69,4 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
         waiting.SetActive(!isConnected);
         connected.SetActive(isConnected);
     }
-
-   
 }
