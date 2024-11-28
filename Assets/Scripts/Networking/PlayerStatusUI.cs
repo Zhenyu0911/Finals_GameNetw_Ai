@@ -95,8 +95,7 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
         if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0] && playerIndex == 0)
         {
             Debug.Log("Game started by player 0!");
-            // Add your game-starting logic here
-            // Example: PhotonNetwork.LoadLevel("GameScene");
+            PhotonNetwork.LoadLevel("Fight");
         }
         else
         {
