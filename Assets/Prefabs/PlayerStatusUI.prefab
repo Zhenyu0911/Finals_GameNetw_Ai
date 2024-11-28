@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 2956252966031550618}
   - component: {fileID: 7793389825990083394}
   - component: {fileID: 2415871838406772140}
-  - component: {fileID: 888428569533711870}
   m_Layer: 5
   m_Name: PlayerStatusUI
   m_TagString: Untagged
@@ -305,7 +304,6 @@ MonoBehaviour:
   connected: {fileID: 8024514752564718136}
   waiting: {fileID: 4052952814913673213}
   playerName: {fileID: 2135433009950556873}
-  playerIcon: {fileID: 4966951584120193762}
 --- !u!114 &2415871838406772140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,21 +326,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &888428569533711870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2184932418871967303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6677effe2f626f34c99b3a0b528bcd28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  readyButton: {fileID: 0}
-  buttonImage: {fileID: 0}
-  statusText: {fileID: 0}
 --- !u!1 &4052952814913673213
 GameObject:
   m_ObjectHideFlags: 0

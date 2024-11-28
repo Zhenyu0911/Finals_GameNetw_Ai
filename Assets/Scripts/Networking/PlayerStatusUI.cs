@@ -17,16 +17,25 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
     [SerializeField]
     private TextMeshProUGUI playerName;
 
+    [SerializeField]
+    private Button startGameButton; // Reference to the start button
+
     private Player player;
 
     private void Start()
     {
         // Default to a waiting state
         ShowConnectionUI(false);
+
+        if (startGameButton != null)
+        {
+            startGameButton.interactable = false; // Disable the button by default
+            startGameButton.onClick.AddListener(StartGame); // Attach the start game logic
+        }
+
         PlayerNumbering.OnPlayerNumberingChanged += UpdateUI;
     }
 
-    // Add/remove the callback target so we can receive Photon raise events
     private void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
@@ -35,6 +44,7 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
     private void OnDisable()
     {
         PhotonNetwork.RemoveCallbackTarget(this);
+        PlayerNumbering.OnPlayerNumberingChanged -= UpdateUI;
     }
 
     private void UpdateUI()
@@ -51,11 +61,21 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
             ShowConnectionUI(true);
             playerName.text = player.NickName;
 
+            // Enable the start game button only for playerIndex 0 and the local player
+            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0] && playerIndex == 0 && startGameButton != null)
+            {
+                startGameButton.interactable = true;
+            }
         }
         else
         {
             // Player disconnected
             ShowConnectionUI(false);
+
+            if (startGameButton != null)
+            {
+                startGameButton.interactable = false;
+            }
         }
     }
 
@@ -68,5 +88,19 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
     {
         waiting.SetActive(!isConnected);
         connected.SetActive(isConnected);
+    }
+
+    private void StartGame()
+    {
+        if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0] && playerIndex == 0)
+        {
+            Debug.Log("Game started by player 0!");
+            // Add your game-starting logic here
+            // Example: PhotonNetwork.LoadLevel("GameScene");
+        }
+        else
+        {
+            Debug.LogWarning("Only player with playerIndex 0 can start the game!");
+        }
     }
 }
