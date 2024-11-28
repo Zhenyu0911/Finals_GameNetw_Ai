@@ -16,6 +16,7 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
     [SerializeField] private Image classImageUI;       // Image to display the current class
     [SerializeField] private TMP_Dropdown classDropdown; // TMP Dropdown for selecting classes
     [SerializeField] private TMP_Text classDescriptionText; // Text to display the current class description
+    [SerializeField] private TMP_Text playerClassListText; // Text to display all players' selected classes
 
     private const string ClassPropertyKey = "PlayerClass"; // Key for class in custom properties
 
@@ -38,6 +39,9 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
         // Refresh available classes
         RefreshClassAvailability();
+
+        // Update the class list UI
+        UpdatePlayerClassList();
     }
 
     private void OnClassSelected(int classIndex)
@@ -63,6 +67,9 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
         // Refresh class availability for everyone
         RefreshClassAvailability();
+
+        // Update the class list UI
+        UpdatePlayerClassList();
     }
 
     private void UpdateClassUI(int classIndex)
@@ -144,12 +151,37 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
         classDropdown.RefreshShownValue();
     }
 
+    private void UpdatePlayerClassList()
+    {
+        if (playerClassListText == null) return;
+
+        // Build a string showing each player's chosen class
+        string playerClasses = "Player Classes:\n";
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            string className = "None";
+
+            if (player.CustomProperties.TryGetValue(ClassPropertyKey, out object classIndexObj) && classIndexObj is int classIndex)
+            {
+                className = classIndex >= 0 && classIndex < classNames.Count ? classNames[classIndex] : "Unknown";
+            }
+
+            playerClasses += $"{player.NickName}: {className}\n";
+        }
+
+        playerClassListText.text = playerClasses;
+    }
+
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
         if (changedProps.ContainsKey(ClassPropertyKey))
         {
             // Refresh class availability whenever a player updates their class
             RefreshClassAvailability();
+
+            // Update the class list UI
+            UpdatePlayerClassList();
 
             // Log for debugging
             if (changedProps[ClassPropertyKey] is int classIndex)
