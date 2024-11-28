@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 
 public class CharacterClassChooser : MonoBehaviourPunCallbacks
 {
@@ -17,8 +18,11 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_Dropdown classDropdown; // TMP Dropdown for selecting classes
     [SerializeField] private TMP_Text classDescriptionText; // Text to display the current class description
     [SerializeField] private TMP_Text playerClassListText; // Text to display all players' selected classes
+    [SerializeField] private Button startGameButton;    // Button for starting the game
 
     private const string ClassPropertyKey = "PlayerClass"; // Key for class in custom properties
+    private const byte StartGameEventCode = 1;            // Custom event code for starting the game
+    private const byte ClassChangeEventCode = 2;          // Custom event code for class change event
 
     private void Start()
     {
@@ -42,6 +46,13 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
         // Update the class list UI
         UpdatePlayerClassList();
+
+        // Set up the Start Game button
+        if (startGameButton != null)
+        {
+            startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Only show to the Master Client
+            startGameButton.onClick.AddListener(StartGame);
+        }
     }
 
     private void OnClassSelected(int classIndex)
@@ -64,6 +75,9 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
         // Update the local UI immediately
         UpdateClassUI(classIndex);
+
+        // Send class change event to notify all other players
+        SendClassChangeEvent(classIndex);
 
         // Refresh class availability for everyone
         RefreshClassAvailability();
@@ -91,7 +105,6 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
     private void UpdateUIFromProperties()
     {
-        // Get the player's current class property and update the UI
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(ClassPropertyKey, out object classIndexObj) && classIndexObj is int classIndex)
         {
             UpdateClassUI(classIndex);
@@ -99,20 +112,18 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
         }
         else
         {
-            // Default to the first class if no property is set
-            OnClassSelected(0);
+            OnClassSelected(0); // Default to the first class if no class is selected yet
         }
     }
 
     private int GetCurrentClassIndex()
     {
-        // Retrieve the player's current class index
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(ClassPropertyKey, out object classIndexObj) && classIndexObj is int classIndex)
         {
             return classIndex;
         }
 
-        return -1; // Default value if no class is set
+        return -1; // Default value when no class is selected
     }
 
     private bool IsClassAvailable(int classIndex)
@@ -123,7 +134,7 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
             {
                 if (otherClassIndex == classIndex)
                 {
-                    return false; // Class is taken
+                    return false; // Class is taken by another player
                 }
             }
         }
@@ -133,14 +144,11 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
 
     private void RefreshClassAvailability()
     {
-        // Refresh the dropdown options based on available classes
         List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
 
         for (int i = 0; i < classNames.Count; i++)
         {
             bool available = IsClassAvailable(i);
-
-            // Update dropdown options to indicate availability
             options.Add(new TMP_Dropdown.OptionData
             {
                 text = available ? classNames[i] : $"{classNames[i]} (Taken)"
@@ -155,7 +163,6 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
     {
         if (playerClassListText == null) return;
 
-        // Build a string showing each player's chosen class
         string playerClasses = "Player Classes:\n";
 
         foreach (Player player in PhotonNetwork.PlayerList)
@@ -173,21 +180,76 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
         playerClassListText.text = playerClasses;
     }
 
+    private void SendClassChangeEvent(int classIndex)
+    {
+        object[] content = new object[] { PhotonNetwork.LocalPlayer.NickName, classIndex };
+        PhotonNetwork.RaiseEvent(ClassChangeEventCode, content, new RaiseEventOptions
+        {
+            Receivers = ReceiverGroup.All
+        }, new SendOptions { Reliability = true });
+    }
+
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
+        // Check if the PlayerClass property has changed
         if (changedProps.ContainsKey(ClassPropertyKey))
         {
-            // Refresh class availability whenever a player updates their class
+            // Refresh class availability for everyone
             RefreshClassAvailability();
 
-            // Update the class list UI
+            // Update the class list UI for all players
             UpdatePlayerClassList();
 
-            // Log for debugging
-            if (changedProps[ClassPropertyKey] is int classIndex)
+            // Update the class UI if it's the local player's properties that changed
+            if (targetPlayer == PhotonNetwork.LocalPlayer)
             {
-                Debug.Log($"Player {targetPlayer.NickName} chose class: {classNames[classIndex]}");
+                if (changedProps[ClassPropertyKey] is int classIndex)
+                {
+                    UpdateClassUI(classIndex);
+                    classDropdown.value = classIndex; // Sync the dropdown
+                }
             }
         }
+    }
+
+    public override void OnEnable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+    }
+
+    public override void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= OnEvent;
+    }
+
+    private void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == ClassChangeEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            string playerName = (string)data[0];
+            int classIndex = (int)data[1];
+
+            // Update the UI of other players when a class change is received
+            if (PhotonNetwork.LocalPlayer.NickName != playerName)
+            {
+                Debug.Log($"Player {playerName} changed their class to {classNames[classIndex]}");
+
+                // Update the other player's class in the list and UI
+                UpdatePlayerClassList();
+            }
+        }
+
+        if (photonEvent.Code == StartGameEventCode)
+        {
+            Debug.Log("All players received the Start Game event.");
+            PhotonNetwork.LoadLevel("Fight"); // Replace with the name of your actual game scene
+        }
+    }
+
+    private void StartGame()
+    {
+        // Send Start Game event to all players
+        PhotonNetwork.RaiseEvent(StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions { Reliability = true });
     }
 }

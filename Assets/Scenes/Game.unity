@@ -399,6 +399,7 @@ MonoBehaviour:
   classDropdown: {fileID: 292853294}
   classDescriptionText: {fileID: 2071971604}
   playerClassListText: {fileID: 352159178}
+  startGameButton: {fileID: 307998109}
 --- !u!4 &282874745
 Transform:
   m_ObjectHideFlags: 0

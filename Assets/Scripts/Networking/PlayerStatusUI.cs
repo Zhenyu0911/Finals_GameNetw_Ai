@@ -61,8 +61,8 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
             ShowConnectionUI(true);
             playerName.text = player.NickName;
 
-            // Enable the start game button only for playerIndex 0 and the local player
-            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0] && playerIndex == 0 && startGameButton != null)
+            // Enable the start game button only for the local player if they are the Master Client
+            if (PhotonNetwork.IsMasterClient && playerIndex == 0 && startGameButton != null)
             {
                 startGameButton.interactable = true;
             }
@@ -92,14 +92,20 @@ public class PlayerStatusUI : MonoBehaviour, IOnEventCallback
 
     private void StartGame()
     {
-        if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0] && playerIndex == 0)
+        // Ensure only the Master Client can start the game
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[0])
         {
-            Debug.Log("Game started by player 0!");
-            PhotonNetwork.LoadLevel("Fight");
+            Debug.Log("Game started by the lobby owner!");
+
+            // Raise an event to notify all players to load the next scene
+            PhotonNetwork.RaiseEvent(1, null, new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All // Ensure all players receive this event
+            }, new SendOptions { Reliability = true });
         }
         else
         {
-            Debug.LogWarning("Only player with playerIndex 0 can start the game!");
+            Debug.LogWarning("Only the lobby owner (Master Client) can start the game!");
         }
     }
 }
