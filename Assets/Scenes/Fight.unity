@@ -2140,10 +2140,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1821986632}
-  - component: {fileID: 1821986631}
-  - component: {fileID: 1821986630}
-  - component: {fileID: 1821986629}
-  - component: {fileID: 1821986628}
+  - component: {fileID: 1821986633}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2151,63 +2148,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1821986628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821986627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ffa1e34b04b7be42916333520c7cfa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiManager: {fileID: 1821986631}
---- !u!114 &1821986629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821986627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9351ec409d8a5034cb995637b570ba80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiManager: {fileID: 1821986631}
---- !u!114 &1821986630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821986627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 079a9d6120194014591d8015040e00a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiManager: {fileID: 1821986631}
---- !u!114 &1821986631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821986627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12f6ef3a0b26fc641b2876ed17c8e265, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turnIndicatorText: {fileID: 1484950518}
-  actionFeedText: {fileID: 1014237878}
-  attackButton: {fileID: 428622246}
-  abilityButton: {fileID: 38405391}
-  endTurnButton: {fileID: 1738674525}
-  healthSlider: {fileID: 1226891508}
 --- !u!4 &1821986632
 Transform:
   m_ObjectHideFlags: 0
@@ -2223,6 +2163,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1821986633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821986627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06603649f644bda479099098685baeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  classSprites: []
+  classNames: []
+  abilities: []
+  turnIndicatorText: {fileID: 1484950518}
+  actionFeedText: {fileID: 1014237878}
+  attackButton: {fileID: 428622246}
+  abilityButton: {fileID: 38405391}
+  endTurnButton: {fileID: 1738674525}
+  healthSlider: {fileID: 1226891508}
 --- !u!1 &1935295178
 GameObject:
   m_ObjectHideFlags: 0

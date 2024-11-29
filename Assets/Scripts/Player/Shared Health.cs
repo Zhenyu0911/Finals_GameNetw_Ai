@@ -4,8 +4,6 @@ public class SharedHealthSystem : MonoBehaviour
 {
     public static SharedHealthSystem Instance { get; private set; }
 
-    [SerializeField] private UIManager uiManager;
-
     private int maxHealth = 100;
     private int currentHealth;
 
@@ -26,7 +24,6 @@ public class SharedHealthSystem : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        uiManager.UpdateHealthSlider(currentHealth);
 
         if (currentHealth <= 0)
         {
