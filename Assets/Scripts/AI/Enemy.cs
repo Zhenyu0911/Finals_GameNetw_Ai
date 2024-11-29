@@ -16,42 +16,58 @@ public class Enemy : MonoBehaviourPunCallbacks
     [SerializeField] public float Damage; //DamageEnemy
     [SerializeField] public float CritRate; //Rate of hitting
     [SerializeField] public float CritDMG; //increase rate of DMG
+
+    PlayerClasses playerStats;
+
     public float randomCrit = Random.Range(0, 100);
     public bool alreadyAttacked;
 
+    void Start()
+    {
+        ResetAttack();
+        ResetHP();
+    }
+
+    void Update()
+    {
+        TakeDamageHP();
+    }
+
+    private void ResetHP()
+    {
+        CurrentHP = MaxHP;
+    }
     //take damage from player
     private void TakeDamageHP()
     {
-        //if damage hit enemy blah blah blah
-        //CurrentHP = //From playerGameObject
+        CurrentHP = playerStats.PlayerDamage() - CurrentHP;
     }
 
-    //Attack damage to player
-    private void AttackDamage()
-    {
-            Debug.Log("Attacked");
-            //damage collision to playerblah blah
-            Damage = +CritDMG;
-            CurrentHP = -Damage;
-            alreadyAttacked = true;
-    }
-
-    //change of hitting the player
-    private void DamageChance()
+        //change of hitting the player
+    public float EnemyAttack()
     {
         //if random number is between 1 - n, guaranteed hit
-            if(!alreadyAttacked) //checks if the enemy has not attacked
+        if (!alreadyAttacked) //checks if the enemy has not attacked
         {
             if (randomCrit > CritRate)
             {
-                Debug.Log("GuaranteedHit");
-                AttackDamage();
+                Debug.Log("CritDMG");
+                Damage = Damage * CritDMG;
+                alreadyAttacked = true;
+                return Damage;
             }
 
             else
             {
-                Debug.Log("You missed");
+                Debug.Log("Normal DMG");
+                alreadyAttacked = true;
+                return Damage;
             }
+        }
+        else
+        {
+            Debug.Log("Already Attacked!");
+            return 0;
         }
     }
 
@@ -61,14 +77,5 @@ public class Enemy : MonoBehaviourPunCallbacks
         alreadyAttacked = false; 
     }
 
-    //When collides with a player to damage
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            DamageChance();
-        }
-    }
-
-      
+         
 }
