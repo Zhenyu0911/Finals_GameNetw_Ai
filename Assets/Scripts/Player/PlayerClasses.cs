@@ -38,6 +38,7 @@ public class PlayerClasses : MonoBehaviourPunCallbacks
                 Debug.Log("CritDMG");
                 Damage = Damage * CritDMG; //Guaranteed CritDMG
                 //damage collision to playerblah blah
+                healthTeam.CurrentHP =- Damage;
                 alreadyAttacked = true;
                 return Damage;
             }
@@ -46,6 +47,7 @@ public class PlayerClasses : MonoBehaviourPunCallbacks
             {
                 Debug.Log("Normal DMG");  //guaranteed normalDMG
                 //damage collision to playerblah blah
+                healthTeam.CurrentHP =- Damage;
                 alreadyAttacked = true;
                 return Damage;
             }

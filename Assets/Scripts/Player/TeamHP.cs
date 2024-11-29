@@ -7,8 +7,7 @@ public class TeamHP : MonoBehaviour
     [SerializeField] public float MaxHP = 100.0f;
     [SerializeField] public float CurrentHP;
 
-    private Enemy enemy;
-
+    Enemy enemy;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +18,7 @@ public class TeamHP : MonoBehaviour
     void Update()
     {
         TakeDamageFromEnemy();
+        NoHealthPlayer();
     }
 
     private void TakeDamageFromEnemy()
@@ -29,5 +29,14 @@ public class TeamHP : MonoBehaviour
     private void ResetHP()
     {
         CurrentHP = MaxHP;
+    }
+
+    //sorry pero kupal kamign coders
+    private void NoHealthPlayer()
+    {
+        if(CurrentHP <= 0)
+        {
+            Application.Quit();
+        }
     }
 }

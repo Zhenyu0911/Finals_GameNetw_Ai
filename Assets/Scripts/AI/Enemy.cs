@@ -24,7 +24,6 @@ public class Enemy : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        ResetAttack();
         ResetHP();
     }
 
@@ -47,8 +46,8 @@ public class Enemy : MonoBehaviourPunCallbacks
     public float EnemyAttack()
     {
         //if random number is between 1 - n, guaranteed hit
-        if (!alreadyAttacked) //checks if the enemy has not attacked
-        {
+        //if (!alreadyAttacked) //checks if the enemy has not attacked
+        //{
             if (randomCrit > CritRate)
             {
                 Debug.Log("CritDMG");
@@ -63,19 +62,19 @@ public class Enemy : MonoBehaviourPunCallbacks
                 alreadyAttacked = true;
                 return Damage;
             }
-        }
-        else
-        {
-            Debug.Log("Already Attacked!");
-            return 0;
-        }
+       // }
+        //else
+        //{
+           // Debug.Log("Already Attacked!");
+           // return 0;
+        //}
     }
 
     //resets when after every round
-    private void ResetAttack()
+    /*private void ResetAttack()
     {
         alreadyAttacked = false; 
-    }
+    }*/
 
          
 }
