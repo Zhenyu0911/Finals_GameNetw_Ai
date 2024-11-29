@@ -11,36 +11,64 @@ using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviourPunCallbacks
 {
-    [SerializeField] public float MaxHP = 100.0f; //MaxHealth of the enemy
-    [SerializeField] public int CurrentHP; //Set HP
-    [SerializeField] public float Damage = 20.0f; //DamageEnemy
-    [SerializeField] public float CritRate = 1.2f; //increase of rate in hitting
+    [SerializeField] public float MaxHP; //MaxHealth of the enemy
+    [SerializeField] public float CurrentHP; //Set HP
+    [SerializeField] public float Damage; //DamageEnemy
+    [SerializeField] public float CritRate; //Rate of hitting
     [SerializeField] public float CritDMG; //increase rate of DMG
-    [SerializeField] public float HitChance = 6.0f; //default setting of chance (60/40)
+    public float randomCrit = Random.Range(0, 100);
+    public bool alreadyAttacked;
 
-    void HitChance
+    //take damage from player
+    private void TakeDamageHP()
     {
-
+        //if damage hit enemy blah blah blah
+        //CurrentHP = //From playerGameObject
     }
 
-    void TakeDamage
+    //Attack damage to player
+    private void AttackDamage()
     {
-
+            Debug.Log("Attacked");
+            //damage collision to playerblah blah
+            Damage = +CritDMG;
+            CurrentHP = -Damage;
+            alreadyAttacked = true;
     }
 
-    void AttackDamage
+    //change of hitting the player
+    private void DamageChance()
     {
+        //if random number is between 1 - n, guaranteed hit
+            if(!alreadyAttacked) //checks if the enemy has not attacked
+        {
+            if (randomCrit > CritRate)
+            {
+                Debug.Log("GuaranteedHit");
+                AttackDamage();
+            }
 
+            else
+            {
+                Debug.Log("You missed");
+            }
+        }
     }
 
-    void RandomCritRate
+    //resets when after every round
+    private void ResetAttack()
     {
-
+        alreadyAttacked = false; 
     }
 
-    void RandomCritDamage
+    //When collides with a player to damage
+    private void OnTriggerEnter2D(Collider2D other)
     {
-
+        if (other.CompareTag("Player"))
+        {
+            DamageChance();
+        }
     }
+
       
 }
