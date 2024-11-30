@@ -33,6 +33,9 @@ public class TurnBasedSystem : MonoBehaviour
     void Start()
     {
         // Initialize health values and sliders
+        playerHealthSlider.maxValue = playerMaxHP;
+        enemyHealthSlider.maxValue = enemyMaxHP;
+
         playerCurrentHP = playerMaxHP;
         enemyCurrentHP = enemyMaxHP;
         randomCrit = Random.Range(1, 101);
@@ -164,8 +167,8 @@ public class TurnBasedSystem : MonoBehaviour
     private void UpdateHealthSliders()
     {
         // Directly update the slider value based on the current health
-        playerHealthSlider.value = (float)playerCurrentHP / playerMaxHP; // Value between 0 and 1
-        enemyHealthSlider.value = (float)enemyCurrentHP / enemyMaxHP; // Value between 0 and 1
+        playerHealthSlider.value = playerCurrentHP;
+        enemyHealthSlider.value = enemyCurrentHP;
 
         // Optional: Update slider text if needed
         if (playerHealthSlider.GetComponentInChildren<TMP_Text>() != null)
