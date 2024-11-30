@@ -215,7 +215,7 @@ public class TurnBasedSystem : MonoBehaviour
         }
         else
         {
-            turnFeedText.text = "It missed! Try again!";
+            turnFeedText.text = "the attacked missed!";
         }
 
         // Ensure enemy HP doesn't go below 0
@@ -244,7 +244,7 @@ public class TurnBasedSystem : MonoBehaviour
 
     private void KupalHealthSLider()
     {
-        if (playerHealthSlider.value <= 0)
+        if (playerCurrentHP <= 0)
         {
             Application.Quit();
         }
