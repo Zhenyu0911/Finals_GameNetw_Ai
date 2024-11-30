@@ -20,6 +20,9 @@ public class TurnBasedSystem : MonoBehaviour
     [SerializeField] private int playerAttackDamage = 20;
     [SerializeField] private int playerAbilityDamage = 30;
     [SerializeField] private int enemyAttackDamage = 15;
+    [SerializeField] private int CritRate = 40;
+
+    private int randomCrit;
 
     private int playerCurrentHP;
     private int enemyCurrentHP;
@@ -32,6 +35,7 @@ public class TurnBasedSystem : MonoBehaviour
         // Initialize health values and sliders
         playerCurrentHP = playerMaxHP;
         enemyCurrentHP = enemyMaxHP;
+        randomCrit = Random.Range(1, 101);
 
         UpdateHealthSliders();
 
@@ -124,21 +128,34 @@ public class TurnBasedSystem : MonoBehaviour
     private void PlayerAttack()
     {
         if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
-        turnFeedText.text = "You attack the enemy!";
-        enemyCurrentHP -= playerAttackDamage;
 
-        // Ensure enemy HP doesn't go below 0
-        enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
+                turnFeedText.text = "You attack the enemy with CRIT!";
+                enemyCurrentHP -= playerAttackDamage;
+                turnFeedText.text = "You attack the enemy!";
+                enemyCurrentHP -= playerAttackDamage;
 
-        UpdateHealthSliders(); // Immediately sync sliders
-        actionTaken = true;
+            // Ensure enemy HP doesn't go below 0
+            enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
+
+            UpdateHealthSliders(); // Immediately sync sliders
+            actionTaken = true;
     }
 
     private void PlayerAbility()
     {
         if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
-        turnFeedText.text = "You use an ability!";
-        enemyCurrentHP -= playerAbilityDamage;
+        
+            if (randomCrit <= CritRate) //<40
+            {
+
+                turnFeedText.text = "You attack the enemy with CRIT!";
+                playerAbilityDamage = playerAbilityDamage + 10; 
+                enemyCurrentHP -= playerAbilityDamage;
+            }
+            else
+            {
+                turnFeedText.text = "You missed loser!";
+            }
 
         // Ensure enemy HP doesn't go below 0
         enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
