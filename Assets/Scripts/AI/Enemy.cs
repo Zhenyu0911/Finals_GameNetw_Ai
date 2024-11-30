@@ -3,27 +3,27 @@ using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun.Demo.Asteroids;
-using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviourPunCallbacks
 {
-    [SerializeField] public float MaxHP; //MaxHealth of the
-    [SerializeField] public float Damage; //DamageEnemy
-    [SerializeField] public float CritRate; //Rate of hitting
-    [SerializeField] public float CritDMG; //increase rate of DMG
+    [SerializeField] public float MaxHP; // MaxHealth of the Enemy
+    [SerializeField] public float Damage; // Base Damage of the Enemy
+    [SerializeField] public float CritRate; // Chance of a critical hit (percentage)
+    [SerializeField] public float CritDMG; // Multiplier for critical damage
 
     PlayerClasses playerStats;
 
-    private float CurrentHP; //Set HP
-    private float randomCrit = Random.Range(1, 100);
+    private float CurrentHP; // Enemy's current health
+    private float randomCrit; // Random number for critical hit calculation
 
     void Start()
     {
         ResetHP();
+
+        // Initialize randomCrit in Start
+        randomCrit = Random.Range(1, 101); // Generate a number between 1 and 100
     }
 
     void Update()
@@ -35,43 +35,28 @@ public class Enemy : MonoBehaviourPunCallbacks
     {
         CurrentHP = MaxHP;
     }
-    //take damage from player
+
+    // Reduce enemy health based on player stats
     private void TakeDamageHP()
     {
-        CurrentHP = playerStats.PlayerDamage() - CurrentHP;
+        if (playerStats != null)
+        {
+            CurrentHP -= playerStats.PlayerDamage();
+        }
     }
 
-        //change of hitting the player
+    // Enemy attack logic with critical hit chance
     public float EnemyAttack()
     {
-        //if random number is between 1 - n, guaranteed hit
-        //if (!alreadyAttacked) //checks if the enemy has not attacked
-        //{
-            if (randomCrit > CritRate)
-            {
-                Debug.Log("CritDMG");
-                Damage = Damage * CritDMG;
-                return Damage;
-            }
-
-            else
-            {
-                Debug.Log("Normal DMG");
-                return Damage;
-            }
-       // }
-        //else
-        //{
-           // Debug.Log("Already Attacked!");
-           // return 0;
-        //}
+        if (randomCrit <= CritRate)
+        {
+            Debug.Log("Critical Damage!");
+            return Damage * CritDMG; // Apply critical damage multiplier
+        }
+        else
+        {
+            Debug.Log("Normal Damage!");
+            return Damage; // Return normal damage
+        }
     }
-
-    //resets when after every round
-    /*private void ResetAttack()
-    {
-        alreadyAttacked = false; 
-    }*/
-
-         
 }

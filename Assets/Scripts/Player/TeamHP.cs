@@ -1,29 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TeamHP : MonoBehaviour
 {
+    [Header("Health Settings")]
     [SerializeField] public float MaxHP = 100.0f;
     [SerializeField] public float CurrentHP;
 
-    Enemy enemy;
+    [Header("UI Components")]
+    [SerializeField] private Slider healthSlider; // Reference to the health slider UI
 
-    // Start is called before the first frame update
+    [Header("References")]
+    [SerializeField] private Enemy enemy; // Reference to an Enemy script (or use other means to calculate damage)
+
     void Start()
     {
         ResetHP();
+
+        // Ensure the slider is configured correctly
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = MaxHP;
+            healthSlider.value = CurrentHP;
+        }
     }
 
     void Update()
     {
-        TakeDamageFromEnemy();
+        if (enemy != null) // Ensure enemy reference is set
+        {
+            TakeDamageFromEnemy();
+        }
+
+        UpdateHealthSlider();
         NoHealthPlayer();
     }
 
     private void TakeDamageFromEnemy()
     {
-        CurrentHP = enemy.Damage - CurrentHP;
+        if (enemy != null)
+        {
+            CurrentHP -= enemy.Damage * Time.deltaTime; // Apply enemy damage over time
+            CurrentHP = Mathf.Clamp(CurrentHP, 0, MaxHP); // Ensure health stays within bounds
+        }
     }
 
     private void ResetHP()
@@ -31,11 +52,19 @@ public class TeamHP : MonoBehaviour
         CurrentHP = MaxHP;
     }
 
-    //sorry pero kupal kamign coders
+    private void UpdateHealthSlider()
+    {
+        if (healthSlider != null)
+        {
+            healthSlider.value = CurrentHP;
+        }
+    }
+
     private void NoHealthPlayer()
     {
-        if(CurrentHP <= 0)
+        if (CurrentHP <= 0)
         {
+            Debug.Log("Game Over!");
             Application.Quit();
         }
     }

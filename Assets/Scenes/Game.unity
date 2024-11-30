@@ -1927,14 +1927,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPersist: 0
-  playerIcons:
-  - {fileID: 21300000, guid: 2aaafe4b0b7fb76428c80d977b25eca3, type: 3}
-  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
-  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
-  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
   IsInitialized: 0
-  readyButton: {fileID: 0}
-  buttonImage: {fileID: 0}
 --- !u!4 &1193134765
 Transform:
   m_ObjectHideFlags: 0
