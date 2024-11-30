@@ -23,7 +23,7 @@ public class TeamHP : MonoBehaviour
 
     private void TakeDamageFromEnemy()
     {
-        CurrentHP = enemy.EnemyAttack() - CurrentHP;
+        CurrentHP = enemy.Damage - CurrentHP;
     }
 
     private void ResetHP()

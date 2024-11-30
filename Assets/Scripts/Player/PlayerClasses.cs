@@ -19,19 +19,12 @@ public class PlayerClasses : MonoBehaviourPunCallbacks
     TeamHP healthTeam;
 
     public float randomCrit = Random.Range(1, 100); //a randomizer that act as a critrate
-    public bool alreadyAttacked; //to avoid attacking more than once 
-
-    void Start()
-    {
-        ResetAttack();
-
-    }
 
 
     public float PlayerDamage()
     {
         //if random number is between 1 - n, guaranteed hit
-        if (!alreadyAttacked) //checks if the player has not attacked
+        //if (!alreadyAttacked) //checks if the player has not attacked
         {
             if (randomCrit > CritRate)
             {
@@ -39,7 +32,6 @@ public class PlayerClasses : MonoBehaviourPunCallbacks
                 Damage = Damage * CritDMG; //Guaranteed CritDMG
                 //damage collision to playerblah blah
                 healthTeam.CurrentHP =- Damage;
-                alreadyAttacked = true;
                 return Damage;
             }
 
@@ -48,20 +40,14 @@ public class PlayerClasses : MonoBehaviourPunCallbacks
                 Debug.Log("Normal DMG");  //guaranteed normalDMG
                 //damage collision to playerblah blah
                 healthTeam.CurrentHP =- Damage;
-                alreadyAttacked = true;
                 return Damage;
             }
-        }
-        else
-        {
-            Debug.Log("Already Attacked!");
-            return 0;
         }
     }
 
     //resets when after every round
-    private void ResetAttack()
+    /*private void ResetAttack()
     {
         alreadyAttacked = false;
-    }
+    }*/
 }

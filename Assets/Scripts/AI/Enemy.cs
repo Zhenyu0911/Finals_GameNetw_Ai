@@ -11,16 +11,15 @@ using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviourPunCallbacks
 {
-    [SerializeField] public float MaxHP; //MaxHealth of the enemy
-    [SerializeField] public float CurrentHP; //Set HP
+    [SerializeField] public float MaxHP; //MaxHealth of the
     [SerializeField] public float Damage; //DamageEnemy
     [SerializeField] public float CritRate; //Rate of hitting
     [SerializeField] public float CritDMG; //increase rate of DMG
 
     PlayerClasses playerStats;
 
-    public float randomCrit = Random.Range(0, 100);
-    public bool alreadyAttacked;
+    private float CurrentHP; //Set HP
+    private float randomCrit = Random.Range(1, 100);
 
     void Start()
     {
@@ -52,14 +51,12 @@ public class Enemy : MonoBehaviourPunCallbacks
             {
                 Debug.Log("CritDMG");
                 Damage = Damage * CritDMG;
-                alreadyAttacked = true;
                 return Damage;
             }
 
             else
             {
                 Debug.Log("Normal DMG");
-                alreadyAttacked = true;
                 return Damage;
             }
        // }
