@@ -46,6 +46,11 @@ MonoBehaviour:
   - RPCDeath
   - RPCTakeDamage
   - ReceiveAction
+  - EndTurn
+  - NotifyTurnEnd
+  - NotifyTurnStart
+  - EnablePlayerButtons
+  - UpdateTurnFeed
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
