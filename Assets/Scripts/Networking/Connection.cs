@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+
 public class Connection : MonoBehaviourPunCallbacks
 {
     private const int MAX_PLAYERS = 4;
@@ -11,11 +12,12 @@ public class Connection : MonoBehaviourPunCallbacks
     [SerializeField] private RectTransform connectedPanel;
     [SerializeField] private TextMeshProUGUI roomInfoText;
 
+    private const string KEY_HOLDER = "KeyHolder"; // Custom property for the player holding the key
+
     public override void OnConnectedToMaster()
     {
-       Debug.Log("We are connected");
-       // The master server handles all the room information
-       PhotonNetwork.JoinRandomRoom();
+        Debug.Log("We are connected");
+        PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnJoinedRoom()
@@ -23,9 +25,17 @@ public class Connection : MonoBehaviourPunCallbacks
         connectingPanel.gameObject.SetActive(false);
         connectedPanel.gameObject.SetActive(true);
 
+        // Check if we're the first player to join
+        if (PhotonNetwork.IsMasterClient && !PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(KEY_HOLDER))
+        {
+            // Assign the key to the first player
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+            {
+                { KEY_HOLDER, PhotonNetwork.LocalPlayer.ActorNumber }
+            });
+        }
+
         UpdateRoomInfo();
-        // Since it's a multiplayer, best to let Photon handle scene loading
-        // Load Game Scene: 1
         PhotonNetwork.LoadLevel(1);
     }
 
@@ -38,44 +48,86 @@ public class Connection : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"{otherPlayer.NickName} left the room");
+
+        // Check if the player who left was holding the key
+        int currentKeyHolder = (int)PhotonNetwork.CurrentRoom.CustomProperties[KEY_HOLDER];
+        if (otherPlayer.ActorNumber == currentKeyHolder)
+        {
+            Debug.Log($"{otherPlayer.NickName} had the key. Reassigning...");
+
+            // Reassign the key to the next player
+            AssignKeyToNextPlayer();
+        }
+
         UpdateRoomInfo();
     }
 
-
-    private void UpdateRoomInfo(){
-        Room currentRoom = PhotonNetwork.CurrentRoom;
-        string formattedText =  $"Room Name: {currentRoom.Name}<br>";
-            foreach(var player in currentRoom.Players){
-                if(PhotonNetwork.IsMasterClient){
-                     formattedText += $"<color=#ee7358>[{player.Key}]: {player.Value.NickName}</color><br>";
-                }
-                else{
-                     formattedText += $"[{player.Key}]: {player.Value.NickName}<br>";
-                }
-            }
-            roomInfoText.text = formattedText;
+    private void AssignKeyToNextPlayer()
+    {
+        // Find the next available player in the room
+        foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
+        {
+            if (player.IsInactive) continue; // Skip inactive players
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+            {
+                { KEY_HOLDER, player.ActorNumber }
+            });
+            Debug.Log($"Key reassigned to {player.NickName} (ActorNumber: {player.ActorNumber})");
+            break;
+        }
     }
+
+    private void UpdateRoomInfo()
+    {
+        Room currentRoom = PhotonNetwork.CurrentRoom;
+
+        if (currentRoom == null) return;
+
+        string formattedText = $"Room Name: {currentRoom.Name}<br>";
+        int keyHolder = currentRoom.CustomProperties.ContainsKey(KEY_HOLDER)
+            ? (int)currentRoom.CustomProperties[KEY_HOLDER]
+            : -1;
+
+        foreach (var player in currentRoom.Players)
+        {
+            if (player.Key == keyHolder)
+            {
+                formattedText += $"<color=#ee7358>[{player.Key}]: {player.Value.NickName} (Key Holder)</color><br>";
+            }
+            else
+            {
+                formattedText += $"[{player.Key}]: {player.Value.NickName}<br>";
+            }
+        }
+
+        roomInfoText.text = formattedText;
+    }
+
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log($"Failed to join a room: {message}");
-        Debug.Log($"Create a room instead..");
-        // If no rooms are available (all rooms are full or there are no rooms at all)..
-        // Create own room
+        Debug.Log("Creating a new room...");
+
         PhotonNetwork.CreateRoom(
             roomName: $"{PhotonNetwork.NickName}'s Room",
-            roomOptions: new RoomOptions{
-                MaxPlayers = MAX_PLAYERS
+            new RoomOptions
+            {
+                MaxPlayers = MAX_PLAYERS,
+                CustomRoomProperties = new ExitGames.Client.Photon.Hashtable
+                {
+                    { KEY_HOLDER, -1 } // Initialize without a key holder
+                }
             });
     }
 
     public void Connect()
     {
-        if(PhotonNetwork.IsConnected){
+        if (PhotonNetwork.IsConnected)
+        {
             Debug.Log("Already connected");
             return;
         }
 
-        // Connect to photon network
         PhotonNetwork.ConnectUsingSettings();
     }
 }

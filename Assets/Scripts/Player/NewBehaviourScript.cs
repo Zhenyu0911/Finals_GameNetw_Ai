@@ -71,6 +71,9 @@ public class TurnBasedSystem : MonoBehaviour
             {
                 yield return StartCoroutine(EnemyTurn());
             }
+
+            // Check player health after each turn
+            KupalHealthSlider();
         }
 
         // Check for game over
@@ -192,46 +195,36 @@ public class TurnBasedSystem : MonoBehaviour
         actionTaken = true;
     }
 
-    // RPC method to synchronize attack action across all players
     [PunRPC]
     private void RPC_PlayerAttack(int damage)
     {
-        // Apply damage to the enemy
         enemyCurrentHP -= damage;
         enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
-
-        // Update health sliders
         UpdateHealthSliders();
     }
 
-    // RPC method to synchronize ability action across all players
     [PunRPC]
     private void RPC_PlayerAbility(int abilityDamage, int crit)
     {
-        if (crit == 1) // Crit hit
+        if (crit == 1)
         {
-            turnFeedText.text = "an attack hit the enemy with CRIT!";
+            turnFeedText.text = "An attack hit the enemy with CRIT!";
             enemyCurrentHP -= abilityDamage;
         }
         else
         {
-            turnFeedText.text = "the attacked missed!";
+            turnFeedText.text = "The attack missed!";
         }
 
-        // Ensure enemy HP doesn't go below 0
         enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
-
-        // Update health sliders immediately
         UpdateHealthSliders();
     }
 
     private void UpdateHealthSliders()
     {
-        // Directly update the slider value based on the current health
         playerHealthSlider.value = playerCurrentHP;
         enemyHealthSlider.value = enemyCurrentHP;
 
-        // Optional: Update slider text if needed
         if (playerHealthSlider.GetComponentInChildren<TMP_Text>() != null)
         {
             playerHealthSlider.GetComponentInChildren<TMP_Text>().text = $"{playerCurrentHP}/{playerMaxHP}";
@@ -242,11 +235,16 @@ public class TurnBasedSystem : MonoBehaviour
         }
     }
 
-    private void KupalHealthSLider()
+    private void KupalHealthSlider()
     {
         if (playerCurrentHP <= 0)
         {
+            Debug.Log("Player's health is zero. Closing the application...");
             Application.Quit();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
     }
 
