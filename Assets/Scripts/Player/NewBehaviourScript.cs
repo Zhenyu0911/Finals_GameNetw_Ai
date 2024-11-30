@@ -20,8 +20,8 @@ public class TurnBasedSystem : MonoBehaviour
     [SerializeField] private int playerAttackDamage = 20;
     [SerializeField] private int playerAbilityDamage = 30;
     [SerializeField] private int enemyAttackDamage = 15;
-    [SerializeField] private int CritRate = 40;
-
+    
+    private int CritRate = 2;
     private int randomCrit;
 
     private int playerCurrentHP;
@@ -35,7 +35,7 @@ public class TurnBasedSystem : MonoBehaviour
         // Initialize health values and sliders
         playerCurrentHP = playerMaxHP;
         enemyCurrentHP = enemyMaxHP;
-        randomCrit = Random.Range(1, 101);
+        randomCrit = Random.Range(1, 2);
 
         UpdateHealthSliders();
 
@@ -143,7 +143,7 @@ public class TurnBasedSystem : MonoBehaviour
     {
         if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
         
-            if (randomCrit <= CritRate) //<40
+            if (randomCrit == CritRate) //2
             {
 
                 turnFeedText.text = "You attack the enemy with CRIT!";
