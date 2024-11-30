@@ -129,10 +129,8 @@ public class TurnBasedSystem : MonoBehaviour
     {
         if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
 
-                turnFeedText.text = "You attack the enemy with CRIT!";
-                enemyCurrentHP -= playerAttackDamage;
-                turnFeedText.text = "You attack the enemy!";
-                enemyCurrentHP -= playerAttackDamage;
+            turnFeedText.text = "You attack the enemy!";
+            enemyCurrentHP -= playerAttackDamage;
 
             // Ensure enemy HP doesn't go below 0
             enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
@@ -149,7 +147,6 @@ public class TurnBasedSystem : MonoBehaviour
             {
 
                 turnFeedText.text = "You attack the enemy with CRIT!";
-                playerAbilityDamage = playerAbilityDamage + 10; 
                 enemyCurrentHP -= playerAbilityDamage;
             }
             else
