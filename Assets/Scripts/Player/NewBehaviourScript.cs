@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class TurnBasedSystem : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class TurnBasedSystem : MonoBehaviour
     [SerializeField] private int playerAttackDamage = 20;
     [SerializeField] private int playerAbilityDamage = 30;
     [SerializeField] private int enemyAttackDamage = 15;
-    
+
     private int CritRate = 1;
     private int randomCrit;
 
@@ -30,8 +31,12 @@ public class TurnBasedSystem : MonoBehaviour
     private bool isPlayerTurn = true;
     private bool actionTaken = false;
 
+    private PhotonView photonView;  // PhotonView reference for RPC
+
     void Start()
     {
+        photonView = GetComponent<PhotonView>();  // Get the PhotonView component attached to this object
+
         // Initialize health values and sliders
         playerHealthSlider.maxValue = playerMaxHP;
         enemyHealthSlider.maxValue = enemyMaxHP;
@@ -51,7 +56,7 @@ public class TurnBasedSystem : MonoBehaviour
 
     private void Update()
     {
-        randomCrit = Random.Range(0, 2);// 0 - 1
+        randomCrit = Random.Range(0, 2); // 0 or 1
     }
 
     private IEnumerator GameLoop()
@@ -87,7 +92,7 @@ public class TurnBasedSystem : MonoBehaviour
     {
         actionTaken = false; // Reset action taken flag
         EnableButtons(true); // Enable buttons for player input
-        turnFeedText.text = "Your Turn! Choose an action.";
+        turnFeedText.text = "Choose an action!";
 
         // Wait for the player to take an action
         while (!actionTaken)
@@ -136,36 +141,88 @@ public class TurnBasedSystem : MonoBehaviour
     {
         if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
 
+        // Make sure turnFeedText is assigned before using it
+        if (turnFeedText != null)
+        {
             turnFeedText.text = "You attack the enemy!";
-            enemyCurrentHP -= playerAttackDamage;
+        }
+        else
+        {
+            Debug.LogError("turnFeedText is not assigned!");
+        }
 
-            // Ensure enemy HP doesn't go below 0
-            enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
+        if (photonView != null)
+        {
+            // Send an RPC to perform the attack on the enemy
+            photonView.RPC("RPC_PlayerAttack", RpcTarget.AllBuffered, playerAttackDamage);
+        }
+        else
+        {
+            Debug.LogError("photonView is not assigned!");
+        }
 
-            UpdateHealthSliders(); // Immediately sync sliders
-            actionTaken = true;
+        actionTaken = true;
     }
 
     private void PlayerAbility()
     {
-        if (!isPlayerTurn || actionTaken) return; // Prevent multiple actions
-        
-            if (randomCrit == CritRate) //2
-            {
+        if (actionTaken) return; // Prevent multiple actions in one turn
 
-                turnFeedText.text = "You attack the enemy with CRIT!";
-                enemyCurrentHP -= playerAbilityDamage;
-            }
-            else
-            {
-                turnFeedText.text = "You missed loser!";
-            }
+        // Make sure turnFeedText is assigned before using it
+        if (turnFeedText == null)
+        {
+            Debug.LogError("turnFeedText is not assigned!");
+        }
+        else
+        {
+            Debug.Log("Ability called");
+            turnFeedText.text = "You attempt to use your ability!";
+        }
+
+        if (photonView != null)
+        {
+            // Send an RPC to perform the ability action on the enemy
+            photonView.RPC("RPC_PlayerAbility", RpcTarget.AllBuffered, playerAbilityDamage, randomCrit);
+        }
+        else
+        {
+            Debug.LogError("photonView is not assigned!");
+        }
+
+        actionTaken = true;
+    }
+
+    // RPC method to synchronize attack action across all players
+    [PunRPC]
+    private void RPC_PlayerAttack(int damage)
+    {
+        // Apply damage to the enemy
+        enemyCurrentHP -= damage;
+        enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
+
+        // Update health sliders
+        UpdateHealthSliders();
+    }
+
+    // RPC method to synchronize ability action across all players
+    [PunRPC]
+    private void RPC_PlayerAbility(int abilityDamage, int crit)
+    {
+        if (crit == 1) // Crit hit
+        {
+            turnFeedText.text = "You attack the enemy with CRIT!";
+            enemyCurrentHP -= abilityDamage;
+        }
+        else
+        {
+            turnFeedText.text = "You missed! Try again!";
+        }
 
         // Ensure enemy HP doesn't go below 0
         enemyCurrentHP = Mathf.Max(enemyCurrentHP, 0);
 
-        UpdateHealthSliders(); // Immediately sync sliders
-        actionTaken = true;
+        // Update health sliders immediately
+        UpdateHealthSliders();
     }
 
     private void UpdateHealthSliders()
