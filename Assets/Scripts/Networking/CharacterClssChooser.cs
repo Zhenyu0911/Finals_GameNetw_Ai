@@ -68,10 +68,8 @@ public class CharacterClassChooser : MonoBehaviourPunCallbacks
         }
 
         // Set the class property for the local player
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
-        {
-            { ClassPropertyKey, classIndex }
-        });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "PlayerClass", classIndex } });
+
 
         // Update the local UI immediately
         UpdateClassUI(classIndex);

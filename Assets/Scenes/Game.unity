@@ -235,7 +235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2415871838406772140, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: sceneViewId
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4052952814913673213, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: m_IsActive
@@ -1766,6 +1766,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2415871838406772140, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: sceneViewId
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2956252966031550618, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4052952814913673213, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
@@ -1856,6 +1860,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 2aaafe4b0b7fb76428c80d977b25eca3, type: 3}
+    - target: {fileID: 4966951584120193762, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7793389825990083394, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: statusText
       value: 
@@ -1920,10 +1928,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPersist: 0
   playerIcons:
-  - {fileID: 21300000, guid: 7313122a7c01e4146b7431b4bb93ed03, type: 3}
-  - {fileID: 21300000, guid: 3075f10a3a88594458106440541eb492, type: 3}
-  - {fileID: 21300000, guid: 67f1d99477dfb6d4c826e54f534bab17, type: 3}
-  - {fileID: 21300000, guid: e0ea8bee3beb685448ba5d136719b71f, type: 3}
+  - {fileID: 21300000, guid: 2aaafe4b0b7fb76428c80d977b25eca3, type: 3}
+  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
+  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
+  - {fileID: 21300000, guid: ade8a255b30970341a6a20ab3fddb6e8, type: 3}
   IsInitialized: 0
   readyButton: {fileID: 0}
   buttonImage: {fileID: 0}
@@ -2584,7 +2592,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2415871838406772140, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: sceneViewId
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4052952814913673213, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: m_IsActive
@@ -3041,7 +3049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2415871838406772140, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: sceneViewId
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2956252966031550618, guid: 96c35bb58c818d6488247e1ac9416a74, type: 3}
       propertyPath: m_Sprite

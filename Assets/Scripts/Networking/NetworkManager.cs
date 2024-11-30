@@ -78,16 +78,6 @@ public class NetworkManager : SingletonPUN<NetworkManager>
             Debug.Log($"{PhotonNetwork.LocalPlayer.NickName} is Unready.");
         }
 
-        // Optionally, you can broadcast the ready state to other players using Photon
-       // RaiseReadyStateEvent(playerReadyStates[playerId]);
     }
 
-    /*private void RaiseReadyStateEvent(bool isReady)
-    {
-        // Send a custom event to notify other players about the ready state
-        object[] content = new object[] { PhotonNetwork.LocalPlayer.ActorNumber, isReady }; // Custom content
-        PhotonNetwork.RaiseEvent(SCORE_UPDATED_EVENT_CODE, content,
-            new RaiseEventOptions { Receivers = ReceiverGroup.All },
-            SendOptions.SendReliable);
-    }*/
 }
