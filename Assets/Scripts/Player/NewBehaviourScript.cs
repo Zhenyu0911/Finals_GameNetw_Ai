@@ -21,7 +21,7 @@ public class TurnBasedSystem : MonoBehaviour
     [SerializeField] private int playerAbilityDamage = 30;
     [SerializeField] private int enemyAttackDamage = 15;
     
-    private int CritRate = 2;
+    private int CritRate = 1;
     private int randomCrit;
 
     private int playerCurrentHP;
@@ -35,7 +35,6 @@ public class TurnBasedSystem : MonoBehaviour
         // Initialize health values and sliders
         playerCurrentHP = playerMaxHP;
         enemyCurrentHP = enemyMaxHP;
-        randomCrit = Random.Range(1, 2);
 
         UpdateHealthSliders();
 
@@ -45,6 +44,11 @@ public class TurnBasedSystem : MonoBehaviour
 
         // Start the game loop
         StartCoroutine(GameLoop());
+    }
+
+    private void Update()
+    {
+        randomCrit = Random.Range(0, 2);// 0 - 1
     }
 
     private IEnumerator GameLoop()
