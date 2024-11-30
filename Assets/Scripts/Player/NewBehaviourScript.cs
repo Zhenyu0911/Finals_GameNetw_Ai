@@ -210,12 +210,12 @@ public class TurnBasedSystem : MonoBehaviour
     {
         if (crit == 1) // Crit hit
         {
-            turnFeedText.text = "You attack the enemy with CRIT!";
+            turnFeedText.text = "an attack hit the enemy with CRIT!";
             enemyCurrentHP -= abilityDamage;
         }
         else
         {
-            turnFeedText.text = "You missed! Try again!";
+            turnFeedText.text = "It missed! Try again!";
         }
 
         // Ensure enemy HP doesn't go below 0
