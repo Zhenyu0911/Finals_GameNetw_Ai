@@ -242,6 +242,14 @@ public class TurnBasedSystem : MonoBehaviour
         }
     }
 
+    private void KupalHealthSLider()
+    {
+        if (playerHealthSlider.value <= 0)
+        {
+            Application.Quit();
+        }
+    }
+
     private void EnableButtons(bool enable)
     {
         attackButton.interactable = enable;
